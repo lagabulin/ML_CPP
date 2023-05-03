@@ -1,8 +1,8 @@
 #include <iostream>
 #include <vector>
 
-#include <dlib/clustering.h>
-#include <dlib/rand.h>
+#include "./dlib/dlib/clustering.h"
+#include "./dlib/dlib/rand.h"
 using namespace std;
 using namespace dlib;
 
