@@ -1,3 +1,4 @@
+/* g++ -O3 -std=c++17 practice.cpp -o practice */
 #include <iostream>
 
 #include "../dlib/dlib/matrix.h"
@@ -5,7 +6,8 @@
 using namespace std;
 using namespace dlib;
 
-int main(){
+int main()
+{
     double data[] = {1,2,3,4,
                      5,6,7,8,
                      9,10,11,12,
