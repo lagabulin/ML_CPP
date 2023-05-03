@@ -6,9 +6,9 @@
 - Run one of below in working directory
 - Compile with all sources
     - `
-g++ -std=c++17 -O3 -I.. ../dlib/dlib/all/source.cpp -lpthread -lX11 main.cpp
+g++ -std=c++17 -O3 -I.. ../dlib/dlib/all/source.cpp -lpthread -lX11 {code file name}.cpp
 `
 - Copile with specific sources
     - `
-g++ -std=c++17 -O3 -lpthread -lX11 main.cpp
+g++ -std=c++17 -O3 -lpthread -lX11 {code file name}.cpp
 `
