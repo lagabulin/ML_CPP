@@ -1,7 +1,7 @@
-# Personal sandbox
-- Initial Settings
+# Personal Sandbox
+- Settings
     - Dlib 19.09 C++
-    - Fast-CPP-CSV-parser
+    - Fast-CPP-CSV-parser(Headers-only lib)
     - Ubuntu 22.04 LTS
 # Compile Command
 - Run one of below in working directory
