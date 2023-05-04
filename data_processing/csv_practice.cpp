@@ -1,5 +1,5 @@
-// g++ -O3 -std=c++17 practice.cpp -o practice
-// ./practice ./data/iris.data
+// g++ -O3 -std=c++17 csv_practice.cpp -o csv_practice
+// ./csv_practice ./data/iris.data
 #include <iostream>
 #include <vector>
 #include <tuple>

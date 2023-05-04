@@ -1,8 +1,10 @@
 # Personal Sandbox
-- Settings
+- Libraries
     - Dlib 19.09 C++
     - Fast-CPP-CSV-parser(Headers-only lib)
-    - plotcpp(Headers-only lib)
+    - Plotcpp(Headers-only lib)
+    - RapidJson
+- Operating System
     - Ubuntu 22.04 LTS
 # Compile Command
 - Run one of below in working directory
