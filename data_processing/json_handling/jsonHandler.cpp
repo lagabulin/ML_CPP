@@ -162,4 +162,4 @@ struct ReviewsHandler
         }
         return true;
     }
-}
+};
