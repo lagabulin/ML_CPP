@@ -4,8 +4,9 @@
     - Fast-CPP-CSV-parser(Headers-only lib)
     - Plotcpp(Headers-only lib)
     - RapidJson
-- Operating System
+- Operating System & Compiler
     - Ubuntu 22.04 LTS
+    - g++ (Ubuntu 11.3.0-1ubuntu1~22.04) 11.3.0
 # Compile Command
 - Run one of below in working directory
 - Compile with all sources

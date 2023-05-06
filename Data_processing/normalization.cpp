@@ -1,3 +1,5 @@
+// g++ -std=c++17 -O3 normalization.cpp -o normalization
+// ./normalization ./data/iris.data
 #include <iostream>
 #include <vector>
 #include <string>
