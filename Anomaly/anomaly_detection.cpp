@@ -48,6 +48,80 @@ void PlotClusters(const Clusters& clusters, const std::string& name, const std::
 }
 
 //Matrix := matrix<double>
+void MultivariateGaussianDist(const Matrix& normal,
+                              const Matrix& test,
+                              const std::string& file_name)
+{
+    // set mean vector
+    dlib::matrix<double> mu(1, normal.nc());
+    dlib::set_all_elements(mu,0);
+
+    for(long c = 0; c< normal.nc(); ++c)
+    {
+        auto col_mean = dlib::mean(dlib::colm(normal, c));
+        dlib::set_colm(mu, c) = col_mean;
+    }
+
+    // set covariance matrix
+    dlib::matrix<double> cov(normal.nc(), normal.nc());
+    dlib::set_all_elements(cov,0);
+
+    // covariance between each rows(sample)
+    // row vector -> (r - mu).T @ (r - mu) = (col - mu.T) @ (col - mu.T).T
+    for(long r = 0; r< normal.nr(); ++r)
+    {
+        auto row = dlib::rowm(normal, r);
+        cov += dlib::trans(row - mu) * (row - mu);
+    }
+    cov *= 1.0 / normal.nr();
+    double cov_det = dlib::det(cov);
+    dlib::matrix<double> cov_inv = dlib::inv(cov);
+
+    // Fixed part: 1 / [(2 pi)^(n/2) * (det(cov))^(1/2)]
+    auto first_part = 
+        1.0 / std::pow(2.0 * M_PI, normal.nc() / 2.0) / std::sqrt(cov_det);
+    
+    // Depends on sample: exp( -0.5 * [(x - mu).T @ cov.inv @ (x - mu)] )
+    auto prob = [&](const dlib::matrix<double>& sample){
+        dlib::matrix<double> s = sample - mu;
+        dlib::matrix<double> exp_val_m = s * (cov_inv * dlib::trans(s));
+        double exp_val = -0.5 * exp_val_m(0,0);
+        double p = first_part * std::exp(exp_val);
+        return p;
+    };
+
+    // hashmap
+    Clusters clusters;
+
+    double prob_threshold = 0.001;
+
+    auto detect = [&](auto samples){
+        for(long r = 0; r< samples.nr(); ++r)
+        {
+            auto row = dlib::rowm(samples, r);
+            double x = row(0,0);
+            double y = row(0,1);
+            auto p = prob(row);
+            if(p >= prob_threshold)
+            {
+                clusters[0].first.push_back(x);
+                clusters[0].second.push_back(y);
+            }
+            else
+            {
+                clusters[1].first.push_back(x);
+                clusters[1].second.push_back(y);
+            }
+        }
+    };
+
+
+    detect(normal);
+    detect(test);
+    PlotClusters(clusters, "Multivariate Gaussaian Distribution", file_name);
+}
+
+//Matrix := matrix<double>
 void OneClassSvm(const Matrix& normal,
                  const Matrix& test,
                  const std::string& file_name)
@@ -131,6 +205,7 @@ int main(int argc, char** argv)
             auto dataset_uni = LoadDataset(path_uni);
 
             OneClassSvm(dataset_multi.first, dataset_multi.second, "dlib-ocsvm.png");
+            MultivariateGaussianDist(dataset_multi.first, dataset_multi.second, "dlib-multi-var.png");
         }
     }
     else
