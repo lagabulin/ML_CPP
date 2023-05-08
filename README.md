@@ -1,6 +1,6 @@
 # Personal Sandbox
 - Libraries
-    - Dlib 19.09 C++
+    - Dlib 19.9 C++
     - Fast-CPP-CSV-parser(Headers-only lib)
     - Plotcpp(Headers-only lib)
     - RapidJson
