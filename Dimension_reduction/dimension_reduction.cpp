@@ -1,3 +1,5 @@
+// g++ -O3 -std=c++17 dimension_reduction.cpp -o dimension_reduction
+// ./dimension_reduction ./data
 #include <iostream>
 #include <vector>
 #include <string>
@@ -51,7 +53,7 @@ void PlotClusters(const Clusters& clusters,
 
 void PCAreduction(const std::vector<Matrix>& data,
                   const std::vector<unsigned long>& labels,
-                  int feature_dim)
+                  double feature_dim) // feature_dim should be floating point in order to prevent PCA eps from being 0
 {
     dlib::vector_normalizer_pca<Matrix> pca;
     pca.train(data, feature_dim/data[0].nr());
@@ -78,7 +80,7 @@ void PCAreduction(const std::vector<Matrix>& data,
 // LDA(compute_lda_tranform) requires Matrix not vector<matrix> form;
 void LDAreduction(const Matrix& data,
                   const std::vector<unsigned long>& labels,
-                  int feature_dim)
+                  double feature_dim)
 {
     dlib::matrix<DataType, 0, 1> mean;
     Matrix transform = data;
@@ -98,6 +100,26 @@ void LDAreduction(const Matrix& data,
     }
     PlotClusters(clusters, "LDA", "lda.png");
     
+}
+
+void Sammonreduction(const std::vector<Matrix>& data,
+                     const std::vector<unsigned long> labels,
+                     double feature_dim)
+{
+    dlib::sammon_projection sp;
+    auto new_data = sp(data, feature_dim);
+
+    Clusters clusters;
+    for(size_t r= 0; r<data.size(); ++r)
+    {
+        Matrix vec = new_data[r];
+        double x = vec(0,0);
+        double y = vec(1,0);
+        auto l = labels[r];
+        clusters[l].first.push_back(x);
+        clusters[l].second.push_back(y);
+    }
+    PlotClusters(clusters, "Sammon Mapping", "sammon.png");
 }
 
 int main(int argc, char** argv)
@@ -139,7 +161,7 @@ int main(int argc, char** argv)
             int feature_dim = 2;
             PCAreduction(vdata, vlabels, feature_dim);
             LDAreduction(data, vlabels, feature_dim);
-            // Sammonreduction(vdata,vlabels, feature_dim);
+            Sammonreduction(vdata,vlabels, feature_dim);
         }
         else
         {
