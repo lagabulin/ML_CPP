@@ -91,6 +91,41 @@ void KRRClassification(const Samples& samples, const Labels& labels,
 
 }
 
+void SVMClassification(const Samples& samples, const Labels& labels,
+                       const Samples& test_samples, const Labels& test_labels,
+                       const std::string& name)
+{
+    using OVOtrainer = one_vs_one_trainer<any_trainer<SampleType>>;
+    using KernelType = radial_basis_kernel<SampleType>;
+
+    svm_nu_trainer<KernelType> svm_trainer;
+    svm_trainer.set_kernel(KernelType(0.1));
+
+    OVOtrainer trainer;
+    trainer.set_trainer(svm_trainer);
+
+    one_vs_one_decision_function<OVOtrainer> df = trainer.train(samples, labels);
+
+    Classes classes;
+    DataType accuracy = 0;
+    for(size_t i = 0; i < test_samples.size(); ++i)
+    {
+        auto vec = test_samples[i];
+        auto class_idx = static_cast<size_t>(df(vec)); // classification on test set
+        if(static_cast<size_t>(test_labels[i]) == class_idx) ++accuracy;
+        auto x = vec(0,0);
+        auto y = vec(1,0);
+
+        classes[class_idx].first.push_back(x);
+        classes[class_idx].second.push_back(y);
+    }
+
+    accuracy /= test_samples.size();
+
+    PlotClusters(classes, "SVM " + std::to_string(accuracy), name +  "-svm-dlib.png");
+
+}
+
 int main(int argc, char** argv)
 {
     if(argc > 1)
@@ -148,7 +183,7 @@ int main(int argc, char** argv)
                     }
                 }
 
-                // SVMClassification(samples, labels, test_samples, test_labels, file_name);
+                SVMClassification(samples, labels, test_samples, test_labels, file_name);
                 KRRClassification(samples, labels, test_samples, test_labels, file_name);
             }
             else
